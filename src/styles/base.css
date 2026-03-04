@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== CSS 变量（品牌色 Token） ===== */
+:root {
+  --color-turquoise:    #17f1d1;
+  --color-turquoise-dk: #0ab89e;
+  --color-purple:       #a855f7;
+  --color-purple-dk:    #7c3aed;
+  --color-yellow:       #fbbf24;
+  --color-yellow-lt:    #fde68a;
+  --color-ink:          #0a0a0a;
+  --color-white:        #ffffff;
+
+  /* 布局 */
+  --wrap-outer-px: clamp(1.5rem, 5vw, 5rem);
+  --wrap-inner-max: 1440px;
+}
+
+/* ===== 全局基础样式 ===== */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    background-color: var(--color-ink);
+    color: var(--color-white);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* 系统减弱动效偏好 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* ===== 通用布局组件 ===== */
+@layer components {
+  /* 原站布局：外层 padding，内层 max-width */
+  .wrap-o {
+    @apply px-[var(--wrap-outer-px)];
+  }
+  .wrap-i {
+    @apply max-w-[var(--wrap-inner-max)] mx-auto;
+  }
+
+  /* 标签文字 */
+  .label {
+    font-family: 'Barlow Condensed', sans-serif;
+    @apply text-xs font-semibold tracking-widest uppercase;
+  }
+
+  /* 大标题（Hero / CTA 区块） */
+  .title-lg {
+    font-family: 'Barlow Condensed', sans-serif;
+    @apply text-[clamp(3.5rem,10vw,10rem)] font-black leading-none tracking-tight uppercase;
+  }
+
+  /* 渐变遮罩（卡片图片叠加效果） */
+  .gradient-overlay::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-t from-ink/80 to-transparent pointer-events-none;
+  }
+  .gradient-overlay {
+    @apply relative;
+  }
+
+  /* 自定义滚动条隐藏 */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* 品牌色文字 */
+  .text-turquoise  { color: var(--color-turquoise); }
+  .text-purple-dark { color: var(--color-purple-dk); }
+  .text-yellow-light { color: var(--color-yellow-lt); }
+
+  /* 通用按钮基础 */
+  .button {
+    @apply relative inline-flex items-center overflow-hidden cursor-pointer select-none;
+    @apply px-6 py-3 rounded-full font-semibold text-sm tracking-wide;
+    @apply transition-colors duration-300;
+  }
+  .button-outlined {
+    @apply border border-white/40 text-white hover:border-white;
+  }
+  .button-yellow {
+    @apply bg-yellow-light text-ink;
+  }
+
+  /* 按钮内层（hover 文字切换效果容器） */
+  .button-inner {
+    @apply relative flex flex-col overflow-hidden h-[1.2em];
+  }
+  .button-inner-static,
+  .button-inner-hover {
+    @apply block transition-transform duration-300;
+  }
+  .button:hover .button-inner-static {
+    @apply -translate-y-full;
+  }
+  .button:hover .button-inner-hover {
+    @apply -translate-y-full;
+  }
+}

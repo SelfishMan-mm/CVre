@@ -1,0 +1,48 @@
+﻿[
+  {
+    "id": "taobao-data-analysis",
+    "title": "基于Python+AI文本分析的商品数据分析",
+    "description": "利用 Playwright 模拟用户登录爬取数据，使用 AI 进行文本筛选和分类的商品数据分析",
+    "detail": "独立完成数据采集到可视化的全链路数据工程。使用 Python + Scrapy 开发，采集 5000+ 商品数据，Airflow 编排自动化 ETL 工作流。构建前端可视化平台，Vue3 + ECharts 实现交互式数据大屏，支持实时筛选与图表联动。开发 PowerBI 商业智能报表，设计 DAX 计算度量值与多维分析模型，支撑采购决策。",
+    "tags": ["Python", "Vue3", "ECharts", "PowerBI", "AI"],
+    "cover": "personal/数据报表.png",
+    "github": "https://github.com/SelfishMan-mm",
+    "demo": "/dashboard/index.html",
+    "featured": true
+  },
+  {
+    "id": "aipartner",
+    "title": "AiPartner — 会反思的个人成长 AI 伴侣",
+    "description": "设计「认知镜子」AI 对话系统，独立完成从微服务后端、AI 工程、前端 Dashboard 到桌面端 EXE 的全栈交付",
+    "detail": "构建 6 维认知分析引擎（性格 / 兴趣 / 思维 / 认知缺陷 / 情绪 / 表达），每轮对话后自动反思并动态构建用户画像。采用 FastAPI 搭建 5 个微服务（Gateway / Memory / RAG / Reflection / Trend / Chat），集成 Kimi 32K + MiniMax 双模型，封装统一 LLM 客户端，Prompt 工程实现 6 维反思 Skill。搭建 RAG 检索层，ChromaDB + BGE 中文 Embedding 本地部署，支持文档入库与语义检索增强对话上下文。开发 React 18 + Vite 前端 Dashboard，Recharts 可视化 6 维雷达图与历史趋势，SSE 实现打字机流式输出。",
+    "tags": ["Python", "FastAPI", "React", "RAG", "LLM"],
+    "cover": "personal/aipartner1.png",
+    "images": ["personal/aipartner1.png", "personal/aipartner2.png"],
+    "github": "https://github.com/SelfishMan-mm",
+    "demo": "",
+    "featured": true
+  },
+  {
+    "id": "powerbi-dashboard",
+    "title": "PowerBI 报表制作",
+    "description": "基于 PowerBI 构建交互式销售数据看板，支持多维度筛选与同期对比分析",
+    "detail": "设计多个可视化页面，涵盖销售渠道、城市、产品维度的圆环图分布展示；构建销售收入 VS PY 对比柱形图，直观呈现同期增长趋势；编写 DAX 计算度量实现动态同期比较、趋势分析与年度特定指标；配置年 / 产品 / 城市 / 渠道四维完全联动筛选器，支持实时交互过滤。",
+    "tags": ["PowerBI", "DAX", "Excel", "数据分析"],
+    "cover": "personal/powerbi-dashboard.png",
+    "images": ["personal/powerbi-dashboard.png"],
+    "github": "https://github.com/SelfishMan-mm",
+    "demo": "",
+    "featured": true
+  },
+  {
+    "id": "personal-website",
+    "title": "个人网站",
+    "description": "独立开发的个人网站",
+    "detail": "使用 HTML、CSS 进行页面布局与样式优化，提升网站响应速度与视觉体验。利用 JavaScript 实现页面交互与动画效果，增强用户体验与网站吸引力。动效部分采用 Three.js、GSAP 实现 WebGL 渲染与动画。",
+    "tags": ["Web", "Three.js", "GSAP"],
+    "cover": "personal/个人网站.png",
+    "github": "https://github.com/SelfishMan-mm",
+    "demo": "",
+    "featured": true
+  }
+]

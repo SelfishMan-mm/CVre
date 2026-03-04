@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- SEO -->
+    <title>MeLess | Frontend & Data Engineer</title>
+    <meta name="description" content="数据分析 & 前端开发 & vibe coding — MeLess 的个人作品集。" />
+    <meta name="author" content="MeLess" />
+    <meta name="robots" content="all" />
+
+    <!-- OG Tags -->
+    <meta property="og:title" content="MeLess | Frontend & Data Engineer" />
+    <meta property="og:description" content="数据分析 & 前端开发 & vibe coding" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://github.com/SelfishMan-mm" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MeLess | Frontend &amp; Data Engineer" />
+    <meta name="twitter:description" content="数据分析 &amp; 前端开发 &amp; vibe coding" />
+    <meta name="twitter:image" content="/og-image.png" />
+
+    <!-- GitHub rel=me -->
+    <link rel="me" href="https://github.com/SelfishMan-mm" />
+
+    <!-- Google Fonts: Plus Jakarta Sans (替代 Matter) + Barlow Condensed (替代 antique-olive) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- 最小宽度保障：窗口过小时提示 -->
+    <style>
+      #narrow-warning {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: #0a0a0a;
+        color: #17f1d1;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        place-items: center;
+        z-index: 9999;
+        text-align: center;
+        padding: 2rem;
+      }
+      @media (max-width: 1023px) {
+        #narrow-warning { display: grid; }
+        #app { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 窗口过小提示（桌面端限定：最小 1024px） -->
+    <div id="narrow-warning">
+      <p>This portfolio is designed for desktop (1024px+).<br />Please resize your window or use a larger screen.</p>
+    </div>
+
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

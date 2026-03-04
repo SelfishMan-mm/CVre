@@ -1,0 +1,35 @@
+[
+  {
+    "id": "mirror-agent-reflection-ai",
+    "title": "我做了一面会反思的 AI 镜子",
+    "excerpt": "用了大半年 AI 助手后，我发现它们只会回答问题，却从不观察提问者。于是我造了 MirrorAgent——一个在对话背后悄悄分析你思维方式的「认知镜子」。",
+    "cover": "https://placehold.co/800x600/0a0a0a/17f1d1?text=Blog+01",
+    "tags": ["AI", "FastAPI", "React"],
+    "date": "2025-08-15",
+    "readingTime": 5,
+    "theme": "turquoise",
+    "content": "用了大半年各种 AI 助手之后，我发现一个共同的问题：它们都很擅长**回答我问的问题**，但从来不会告诉我——我是一个怎样的提问者。\n\n我问的问题折射了我的思维方式、我的知识盲区、我关心什么又忽视了什么。这些信息每次对话都在产生，却全部消失在一个个独立的会话窗口里。于是我想：**能不能造一面镜子，让 AI 在回答我的时候，也悄悄观察我？**\n\n这就是 MirrorAgent 的起点。\n\n**它是怎么工作的？**\n\n核心流程其实不复杂：用户正常和 AI 对话（基于 Kimi 32K 长上下文模型）；每当一段对话结束，系统**异步触发反思引擎**，从性格、兴趣、思维模式、认知缺陷、情绪、表达风格 6 个维度分析这段对话；分析结果增量合并进 user_profile.json，画像随每次对话滚动更新；前端 Dashboard 将画像以雷达图、时间线等形式可视化，让用户直观看见自己的认知轨迹。整个过程对用户无感——你只是在正常聊天，镜子在后台悄悄成像。\n\n**技术上有什么挑战？**\n\n最难处理的不是 AI 调用，而是**LLM 输出的不可靠性**。反思引擎要求 Kimi 返回严格的 JSON 结构，但模型偶尔会在 JSON 外包一层说明文字，导致解析崩溃。最终的解决方案是双重 fallback：先 json.loads()，失败则用正则提取 {...} 块。\n\n另一个挑战是流式输出的透传。项目使用微服务架构，前端的打字机效果需要穿越 Gateway 层，不能缓冲整包再转发，必须实现 SSE 流的逐块透传——这让 Gateway 的实现比预想复杂了不少。\n\n**一些反思**\n\n做完这个项目，我用它对话了几十次，真的从画像里看到了一些自己没意识到的东西：我提问时倾向于先预设答案再求证，而不是开放式探索。这个结论是 AI 分析出来的，但对照记录，确实能找到证据。\n\n这大概是这个项目最让我满意的地方——**它真的用了一次。**\n\n项目技术栈：Python · FastAPI · React · ChromaDB · Kimi API · PyInstaller"
+  },
+  {
+    "id": "taobao-ram-full-analysis",
+    "title": "从零到一：Playwright + LLM 的淘宝内存条数据全链路分析",
+    "excerpt": "涵盖自动化爬取、XGBoost 价格预测、Kimi API 智能解读，到 React 看板全流程，记录一个电商数据分析项目的完整架构思路与踩坑实录。",
+    "cover": "https://placehold.co/800x600/0a0a0a/a855f7?text=Blog+02",
+    "tags": ["Python", "Playwright", "LLM"],
+    "date": "2025-06-20",
+    "readingTime": 7,
+    "theme": "purple",
+    "content": "在当今数据驱动的时代，对电商平台进行深度数据挖掘已成为市场洞察的重要手段。最近完成了一个「淘宝内存条数据分析」的全链路项目，不仅涵盖自动化数据采集，还深度集成了机器学习与大语言模型进行智能分析，最终通过多维看板呈现结果。\n\n**核心架构与技术栈**\n\n本项目采用前后端分离且多模块并行的架构。**自动化采集层**：利用 Playwright 驱动浏览器，完美解决淘宝登录及动态加载问题，通过控制请求频率和 Cookie 持久化实现稳定高效的商品数据抓取。**数据治理层**：使用 Pandas 结合 PyArrow 进行高效的数据清洗与特征工程，针对非结构化标题数据构建基于正则的 NLP 提取管道，准确提取内存容量、频率及分代（DDR4/DDR5）等核心参数。**智能分析层**：训练 XGBoost 和 LightGBM 模型进行价格预测，帮助识别市场中的「低价陷阱」或「高性价比」商品；集成 Kimi API，利用大模型对复杂市场趋势进行总结，输出人性化分析报告。**多维可视化**：Vite + React + Tailwind CSS 构建现代化前端看板，辅以 Power BI 进行深度商业智能展示。\n\n**项目亮点**\n\n稳健的爬虫策略：面对淘宝复杂的反爬机制，采用「首次手动登录 + 本地 Cookie 缓存」方案，既保证账号安全，又实现全自动化采集。AI 赋能：不同于传统统计图表，引入 LLM 对 EDA 结果进行人话解读，大大降低数据阅读门槛。闭环化工作流：从 raw_data.db 到清洗后的 features_engineered.csv，再到最终的 dashboard.html，整个流程高度自动化。\n\n**总结与感悟**\n\n通过这个项目，我深刻体会到：**数据采集只是第一步，真正的价值在于对数据的清洗与智能解读。** 结合机器学习的预测能力与大语言模型的理解能力，数据才能真正转化为辅助决策的利器。\n\n注：本项目仅用于学术研究与毕业设计展示，遵守数据采集伦理，不涉及任何用户隐私。"
+  },
+  {
+    "id": "personal-website-dev",
+    "title": "用 Three.js + GSAP 打造沉浸式个人主页：全栈独立开发实录",
+    "excerpt": "从 WebGL 粒子系统、ScrollTrigger 区块动效到自定义磁性光标，记录一次以性能优化为核心约束的个人主页完整构建历程。",
+    "cover": "https://placehold.co/800x600/0a0a0a/fbbf24?text=Blog+03",
+    "tags": ["Three.js", "GSAP", "WebGL"],
+    "date": "2025-04-10",
+    "readingTime": 6,
+    "theme": "yellow",
+    "content": "一直想做一个能代表自己技术风格的个人主页，不是那种「姓名 + 简介 + 项目列表」的简历型网站，而是一个有沉浸感、有记忆点的作品。这篇文章记录了整个项目从技术选型到上线的核心思路。\n\n**为什么选 Three.js + GSAP？**\n\n最初考虑过 React + Framer Motion 的组合，生态成熟、上手快。但我想要的那种 3D 空间感和粒子特效，Canvas/WebGL 才是根本。Three.js 让我能直接操控 GPU 渲染管线，写顶点着色器控制每个粒子的运动轨迹；GSAP 则负责 DOM 层的时间线动画，两者配合处理不同粒度的动效，分工清晰。\n\n**WebGL 背景粒子系统**\n\n背景的星点粒子是项目里最难调的部分。使用 THREE.BufferGeometry + 自定义顶点/片段着色器，在 GPU 上并行计算 6000+ 粒子的位置。为了避免页面切到后台时 GPU 持续空转，监听了 visibilitychange 事件暂停/恢复 requestAnimationFrame 循环，移动端则根据 devicePixelRatio 动态缩减粒子密度，保证低端机也能流畅运行。\n\n**GSAP ScrollTrigger 区块动画**\n\n每个 section 的入场动效用 ScrollTrigger 绑定滚动进度。Hero 区的标题采用逐字拆解 + 交错延迟，Works 轮播卡片用 stagger 做级联浮入，Blob 形态变化则通过 morphSVG 实现有机的边界过渡。所有动画统一通过 prefers-reduced-motion 媒体查询做降级，无障碍访问优先。\n\n**自定义光标与导航**\n\n磁性吸附导航项和跟随光标是两个独立模块。光标内部维护了一个状态机，根据悬停目标（链接、图片、按钮）切换不同的 cursor label 和缩放比例，用 requestAnimationFrame + lerp 插值做缓动跟随，避免直接绑定 mousemove 造成频繁重绘。\n\n**工程化与部署**\n\n整个项目用 Vite + TypeScript 构建，PostCSS + Tailwind 处理样式，代码按功能模块拆分到 sections/、components/、scripts/ 三层，保持单文件职责清晰。实现了图片懒加载、字体预连接、资源 CDN 缓存头配置，Lighthouse 性能分数稳定在 90+。最终部署到 Vercel，配置 vercel.json 做 SPA 路由重写和静态资源缓存策略。\n\n**最大的收获**\n\n这个项目让我真正理解了「前端性能优化」不是锦上添花，而是贯穿架构决策的核心约束。从 WebGL 资源管理到 DOM 批量操作，每一处细节都在影响最终体验。下一步计划引入 WASM 做粒子碰撞计算，进一步把渲染负载从主线程剥离。"
+  }
+]

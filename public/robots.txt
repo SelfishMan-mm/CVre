@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://meless.vercel.app/sitemap.xml
