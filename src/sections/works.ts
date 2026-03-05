@@ -11,56 +11,48 @@ import type { Project } from '@/types'
 
 const featured = (projects as Project[]).filter(p => p.featured)
 
+/** 生成卡片内部公共 HTML（图片 + shimmer + 文字叠层） */
+function cardInner(p: Project): string {
+  return `
+    <div class="carousel-item-img">
+      <div class="carousel-item-img-inner">
+        <img src="/assets/${p.cover}" alt="${p.title}" loading="lazy"
+          onerror="this.src='https://placehold.co/800x600/111/17f1d1?text=Project'">
+      </div>
+      <div class="card-shimmer" aria-hidden="true"></div>
+      <div class="carousel-item-text">
+        <span class="card-tags">${p.tags.join(' • ')}</span>
+        <h3>${p.title}</h3>
+        <p>${p.description}</p>
+      </div>
+    </div>
+  `
+}
+
 function projectCard(p: Project): string {
   // 有图片画廊时用 button 打开画廊模态框
   if (p.images && p.images.length) {
     return `
-  <button type="button" class="carousel-item" data-gallery="${encodeURIComponent(JSON.stringify(p.images))}" data-title="${p.title}" data-cursor="view" aria-label="${p.title}">
-    <div class="carousel-item-hover" aria-hidden="true"></div>
-    <div class="carousel-item-img gradient-overlay">
-      <div class="carousel-item-img-inner">
-        <img src="/assets/${p.cover}" alt="${p.title}" loading="lazy" onerror="this.src='https://placehold.co/800x600/111/17f1d1?text=Project'">
-      </div>
-    </div>
-    <div class="carousel-item-text">
-      <p>${p.description}</p>
-      <h3>${p.title}</h3>
-      <span class="label">${p.tags.join(' • ')}</span>
-    </div>
+  <button type="button" class="carousel-item card-hidden"
+    data-gallery="${encodeURIComponent(JSON.stringify(p.images))}"
+    data-title="${p.title}" data-cursor="view" aria-label="${p.title}">
+    ${cardInner(p)}
   </button>
   `
   }
   // 有 demo 时用 button 打开内嵌模态框，否则跳转 GitHub
   if (p.demo) {
     return `
-  <button type="button" class="carousel-item" data-demo="${p.demo}" data-cursor="view" aria-label="${p.title}">
-    <div class="carousel-item-hover" aria-hidden="true"></div>
-    <div class="carousel-item-img gradient-overlay">
-      <div class="carousel-item-img-inner">
-        <img src="/assets/${p.cover}" alt="${p.title}" loading="lazy" onerror="this.src='https://placehold.co/800x600/111/17f1d1?text=Project'">
-      </div>
-    </div>
-    <div class="carousel-item-text">
-      <p>${p.description}</p>
-      <h3>${p.title}</h3>
-      <span class="label">${p.tags.join(' • ')}</span>
-    </div>
+  <button type="button" class="carousel-item card-hidden"
+    data-demo="${p.demo}" data-cursor="view" aria-label="${p.title}">
+    ${cardInner(p)}
   </button>
   `
   }
   return `
-  <a href="${p.github ?? '#'}" class="carousel-item" target="_blank" rel="noopener" data-cursor="view" aria-label="${p.title}">
-    <div class="carousel-item-hover" aria-hidden="true"></div>
-    <div class="carousel-item-img gradient-overlay">
-      <div class="carousel-item-img-inner">
-        <img src="/assets/${p.cover}" alt="${p.title}" loading="lazy" onerror="this.src='https://placehold.co/800x600/111/17f1d1?text=Project'">
-      </div>
-    </div>
-    <div class="carousel-item-text">
-      <p>${p.description}</p>
-      <h3>${p.title}</h3>
-      <span class="label">${p.tags.join(' • ')}</span>
-    </div>
+  <a href="${p.github ?? '#'}" class="carousel-item card-hidden"
+    target="_blank" rel="noopener" data-cursor="view" aria-label="${p.title}">
+    ${cardInner(p)}
   </a>
   `
 }
@@ -134,23 +126,10 @@ export function worksHTML(): string {
 
 export function initWorks(): void {
   const section  = document.getElementById('works')!
-  const grid     = section.querySelector<HTMLElement>('.works-grid')!
   const label    = section.querySelector<HTMLElement>('[data-animate]')!
   const rm       = prefersReducedMotion()
 
-  // 入场动画
-  onIntersect(grid, () => {
-    if (rm) return
-    anime({
-      targets: section.querySelectorAll('.carousel-item'),
-      translateY: ['40px', '0px'],
-      opacity: [0, 1],
-      delay: anime.stagger(80),
-      duration: 700,
-      easing: 'easeOutExpo',
-    })
-  })
-
+  // 标题区块入场动画
   onIntersect(label, () => {
     if (rm) return
     anime({
@@ -162,6 +141,30 @@ export function initWorks(): void {
       easing: 'easeOutExpo',
     })
   })
+
+  // 卡片滚动进入：从下方淡入并旋转归位，stagger 0.1s
+  const cards = Array.from(section.querySelectorAll<HTMLElement>('.carousel-item'))
+  const scrollObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return
+        const card = entry.target as HTMLElement
+        const idx  = cards.indexOf(card)
+        const delay = rm ? 0 : idx * 100
+        card.style.transitionDelay = `${delay}ms`
+        card.classList.remove('card-hidden')
+        card.classList.add('card-visible')
+        // 进入动画完成后，移除慢速 transition，换成快速响应
+        setTimeout(() => {
+          card.style.transitionDelay = ''
+          card.style.transition = 'transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.45s cubic-bezier(0.23, 1, 0.32, 1)'
+        }, delay + 700) // 700ms 是 .card-hidden 的 transition 时长
+        scrollObserver.unobserve(card)
+      })
+    },
+    { threshold: 0.15 }
+  )
+  cards.forEach(c => scrollObserver.observe(c))
 
   // Demo 模态框逻辑
   const modal   = document.getElementById('demo-modal') as HTMLElement
@@ -250,30 +253,43 @@ export function initWorks(): void {
   galleryBackdrop?.addEventListener('click', closeGallery)
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !galleryModal.hidden) closeGallery() })
 
-  // 3D 倾斜效果
+  // ── 3D 倾斜效果（鼠标 + 触摸双支持，CSS 自定义属性驱动）──
   if (!rm) {
     section.querySelectorAll<HTMLElement>('.carousel-item').forEach(card => {
-      card.addEventListener('mousemove', (e) => {
+
+      function applyTilt(nx: number, ny: number) {
+        // nx / ny 均在 [-0.5, 0.5]
+        card.style.setProperty('--ry',  `${nx * 14}deg`)
+        card.style.setProperty('--rx',  `${-ny * 10}deg`)
+        card.style.setProperty('--tz',  '32px')
+      }
+
+      function resetTilt() {
+        card.style.setProperty('--ry',  '4deg')
+        card.style.setProperty('--rx',  '0deg')
+        card.style.setProperty('--tz',  '0px')
+      }
+
+      // == 鼠标 ==
+      card.addEventListener('mousemove', (e: MouseEvent) => {
         const rect = card.getBoundingClientRect()
-        const x = (e.clientX - rect.left) / rect.width  - 0.5
-        const y = (e.clientY - rect.top)  / rect.height - 0.5
-        anime({
-          targets: card,
-          rotateY: x * 12,
-          rotateX: -y * 8,
-          duration: 200,
-          easing: 'easeOutQuad',
-        })
+        const nx = (e.clientX - rect.left) / rect.width  - 0.5
+        const ny = (e.clientY - rect.top)  / rect.height - 0.5
+        applyTilt(nx, ny)
       })
-      card.addEventListener('mouseleave', () => {
-        anime({
-          targets: card,
-          rotateY: 0,
-          rotateX: 0,
-          duration: 500,
-          easing: 'spring(1, 80, 10, 0)',
-        })
-      })
+      card.addEventListener('mouseleave', resetTilt)
+
+      // == 触摸 ==
+      card.addEventListener('touchmove', (e: TouchEvent) => {
+        if (e.touches.length !== 1) return
+        const t = e.touches[0]
+        const rect = card.getBoundingClientRect()
+        const nx = (t.clientX - rect.left) / rect.width  - 0.5
+        const ny = (t.clientY - rect.top)  / rect.height - 0.5
+        applyTilt(nx, ny)
+      }, { passive: true })
+      card.addEventListener('touchend',   resetTilt, { passive: true })
+      card.addEventListener('touchcancel', resetTilt, { passive: true })
     })
   }
 }
