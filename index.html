@@ -40,32 +40,8 @@
       rel="stylesheet"
     />
 
-    <!-- 最小宽度保障：窗口过小时提示 -->
-    <style>
-      #narrow-warning {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: #0a0a0a;
-        color: #17f1d1;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        place-items: center;
-        z-index: 9999;
-        text-align: center;
-        padding: 2rem;
-      }
-      @media (max-width: 1023px) {
-        #narrow-warning { display: grid; }
-        #app { display: none; }
-      }
-    </style>
   </head>
   <body>
-    <!-- 窗口过小提示（桌面端限定：最小 1024px） -->
-    <div id="narrow-warning">
-      <p>This portfolio is designed for desktop (1024px+).<br />Please resize your window or use a larger screen.</p>
-    </div>
-
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
